@@ -34,6 +34,9 @@ class Connect:
 
         # Keep track of the last action played (simplifies checking for terminal states).
         self.last_action = None
+        
+        # Keep track of the second to last action played
+        self.last_last_action = None
 
         self.game_over = False
         if self.verbose:
@@ -53,10 +56,38 @@ class Connect:
         self.lowest_free_rows[action] += 1
         if self.lowest_free_rows[action] == self.num_rows:
             self.available_actions = np.setdiff1d(self.available_actions, action)
+            
+        if self.last_action is not None:
+            self.last_last_action = self.last_action
+            
         self.last_action = action
+            
 
         if self.verbose:
             print(self.grid[::-1, ])
+            
+    def undo_act(self):
+        
+        if not self.grid[2,self.last_action] == " ":
+            self.grid[2,self.last_action] = " "
+        elif not self.grid[1,self.last_action] == " ":
+            self.grid[1,self.last_action] = " "
+        else:
+            self.grid[0,self.last_action] = " "
+            
+       
+        if self.num_rows == self.lowest_free_rows[self.last_action]:
+            print(self.available_actions)
+            self.available_actions = np.append(self.available_actions, [self.last_action])
+            print(self.available_actions)
+                    
+        self.lowest_free_rows[self.last_action] -= 1
+        
+        
+        if self.last_action is not None:
+            self.last_action = self.last_last_action
+            
+        
 
     def grid_is_full(self):
         return np.all(self.lowest_free_rows == self.num_rows)
