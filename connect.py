@@ -77,9 +77,7 @@ class Connect:
             
        
         if self.num_rows == self.lowest_free_rows[self.last_action]:
-            print(self.available_actions)
             self.available_actions = np.append(self.available_actions, [self.last_action])
-            print(self.available_actions)
                     
         self.lowest_free_rows[self.last_action] -= 1
         
